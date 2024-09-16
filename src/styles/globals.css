@@ -1,0 +1,8 @@
+@tailwind base;
+
+.form-input {
+    @apply ring-0 focus:ring-0 active:ring-0 active:border-gray-300 focus:border-gray-300 border border-gray-200 rounded-[5px] block flex-1 transition duration-150 ease-in-out;
+}
+
+@tailwind components;
+@tailwind utilities;

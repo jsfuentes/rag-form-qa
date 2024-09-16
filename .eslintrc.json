@@ -1,0 +1,13 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "linebreak-style": ["error", "unix"],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/no-unescaped-entities": "off", //I think &pos; vs ' can cause more accidently errors than allowing potentially jsx code into the text(WYSIWYG)
+    "no-unused-vars": "off", //I like having Sentry and debug always available
+    "@typescript-eslint/no-unused-vars": "off", //I like having Sentry and debug always available
+    "@typescript-eslint/no-var-requires": "off", // I like requiring debug
+    "@typescript-eslint/no-empty-interface": "off" // I like having empty props so you can easily add new props when needed
+  }
+}
