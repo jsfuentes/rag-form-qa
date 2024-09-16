@@ -1,0 +1,53 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Form {
+  id        Int            @id @default(autoincrement())
+  name      String
+  questions FormQuestion[]
+  cases     Case[]
+}
+
+model FormQuestion {
+  id       Int       @id @default(autoincrement())
+  label    String
+  type     String
+  form     Form      @relation(fields: [formId], references: [id])
+  formId   Int
+  answers  Answer[]
+}
+
+model Case {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  formId    Int
+  form      Form     @relation(fields: [formId], references: [id])
+  answers   Answer[]
+  corpus    Corpus[]
+}
+
+model Answer {
+  id             Int          @id @default(autoincrement())
+  value          String
+  formQuestion   FormQuestion @relation(fields: [formQuestionId], references: [id])
+  formQuestionId Int
+  case           Case         @relation(fields: [caseId], references: [id])
+  caseId         Int
+}
+
+model Corpus {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  embedding String?  // Add this line to store the embedding
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  case      Case     @relation(fields: [caseId], references: [id])
+  caseId    Int
+}

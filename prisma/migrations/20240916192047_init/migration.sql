@@ -1,0 +1,32 @@
+-- CreateTable
+CREATE TABLE "Form" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "FormQuestion" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "label" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "formId" INTEGER NOT NULL,
+    CONSTRAINT "FormQuestion_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Case" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "formId" INTEGER NOT NULL,
+    CONSTRAINT "Case_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Answer" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "value" TEXT NOT NULL,
+    "formQuestionId" INTEGER NOT NULL,
+    "caseId" INTEGER NOT NULL,
+    CONSTRAINT "Answer_formQuestionId_fkey" FOREIGN KEY ("formQuestionId") REFERENCES "FormQuestion" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Answer_caseId_fkey" FOREIGN KEY ("caseId") REFERENCES "Case" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);

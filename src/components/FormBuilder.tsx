@@ -8,6 +8,9 @@ import {
   FieldValues,
 } from "react-hook-form";
 import Button from "./Button";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 interface FormField {
   id: string;
@@ -16,6 +19,7 @@ interface FormField {
 }
 
 interface FormBuilderProps {
+  formId: string;
   formFields: FormField[];
   setFormFields: React.Dispatch<React.SetStateAction<FormField[]>>;
   register: UseFormRegister<FieldValues>;
@@ -28,7 +32,7 @@ interface FormBuilderProps {
 }
 
 interface FormInput {
-  fields: FormField[];
+  questions: FormField[];
   newField: {
     type: string;
     label: string;
@@ -37,10 +41,28 @@ interface FormInput {
 
 export default function FormBuilder(props: FormBuilderProps) {
   const { register, handleSubmit, append, remove, fields } = props;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
-  const onSubmit: SubmitHandler<FormInput> = (data) => {
-    console.log(data);
-    //todo:call api to create form
+  const onSubmit: SubmitHandler<FormInput> = async (data) => {
+    setIsSubmitting(true);
+    console.log("Form data to be submitted:", data);
+    try {
+      const response = await axios.put("/api/form", {
+        id: props.formId,
+        name: "New Form", // You might want to add a name field to your form
+        questions: data.questions,
+      });
+      console.log("Form created:", response.data);
+      toast.success("Form saved successfully!");
+    } catch (error) {
+      console.error("Error creating form:", error);
+      toast.error("Error saving form. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+      //todo instead of reloading reset React hook form to have IDs
+      router.reload();
+    }
   };
 
   const removeField = (index: number) => {
@@ -86,16 +108,15 @@ export default function FormBuilder(props: FormBuilderProps) {
           </div>
         ))}
         <button
-          onClick={() =>
-            append({ id: Date.now().toString(), type: "text", label: "" })
-          }
+          type="button"
+          onClick={() => append({ type: "text", label: "" })}
           className="bg-primary-100 mb-16 text-gray-700 border-2 border-dashed border-primary-300 px-6 py-3 rounded w-full hover:bg-primary-200 transition-colors duration-300"
         >
           Add Field
         </button>
 
-        <Button type="submit" className="mt-12">
-          Create Form
+        <Button type="submit" className="mt-12" disabled={isSubmitting}>
+          {isSubmitting ? "Saving..." : "Save Form"}
         </Button>
       </form>
     </div>
